@@ -1,82 +1,12 @@
-'use client'
-
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, Bot, Building2, Check, ChevronDown, Landmark, Menu, MessageCircle, Send, Sparkles, X } from 'lucide-react'
-
-const prompts = [
-  'What services do you offer?',
-  'Tell me about your experience',
-  'How can I start a project?'
-]
-
-const answers = {
-  'What services do you offer?': 'We manage the full development lifecycle — site selection, planning, design, financing, entitlements, construction, and delivery.',
-  'Tell me about your experience': 'PDG develops retail, hospitality, office, government, multifamily, and mixed-use projects nationwide, with an experienced in-house team.',
-  'How can I start a project?': 'Share your project type, target market, and timeline. Our team will follow up to schedule a focused development consultation.'
-}
-
-function ChatWidget() {
-  const [open, setOpen] = useState(false)
-  const [input, setInput] = useState('')
-  const [typing, setTyping] = useState(false)
-  const [messages, setMessages] = useState([
-    { type: 'bot', text: "Hi, I'm the PDG project assistant. How can I help bring your vision to life?" }
-  ])
-  const end = useRef(null)
-
-  useEffect(() => end.current?.scrollIntoView({ behavior: 'smooth' }), [messages, typing])
-
-  const send = (text) => {
-    const value = text.trim()
-    if (!value || typing) return
-    setMessages(m => [...m, { type: 'user', text: value }])
-    setInput('')
-    setTyping(true)
-    setTimeout(() => {
-      setMessages(m => [...m, { type: 'bot', text: answers[value] || "Thanks for reaching out. I can help with development services, project experience, or connecting you with our team for a consultation." }])
-      setTyping(false)
-    }, 900)
-  }
-
-  return <div className="chat-wrap">
-    {open && <div className="chat-panel">
-      <div className="chat-head">
-        <div className="bot-mark"><Sparkles size={17} /></div>
-        <div><strong>PDG Assistant</strong><span><i /> Online now</span></div>
-        <button aria-label="Close chat" onClick={() => setOpen(false)}><X size={18}/></button>
-      </div>
-      <div className="chat-body">
-        <div className="assistant-note"><Sparkles size={13}/> AI-powered project guidance</div>
-        {messages.map((m, i) => <div className={`bubble ${m.type}`} key={i}>{m.type === 'bot' && <Bot size={14}/>}<span>{m.text}</span></div>)}
-        {typing && <div className="bubble bot typing"><span/><span/><span/></div>}
-        {messages.length === 1 && <div className="quick-prompts">{prompts.map(p => <button onClick={() => send(p)} key={p}>{p}<ArrowRight size={13}/></button>)}</div>}
-        <div ref={end}/>
-      </div>
-      <form className="chat-input" onSubmit={e => {e.preventDefault(); send(input)}}>
-        <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask about your next project..."/>
-        <button aria-label="Send"><Send size={17}/></button>
-      </form>
-      <small className="chat-disclaimer">Demo assistant • Responses are simulated</small>
-    </div>}
-    <button className="chat-button" onClick={() => setOpen(!open)} aria-label="Open AI assistant">
-      {open ? <X/> : <MessageCircle/>}<span>{open ? 'Close' : 'Ask PDG'}</span>
-      {!open && <b>1</b>}
-    </button>
-  </div>
-}
+import { ArrowRight, Building2, Check, ChevronDown, Landmark } from 'lucide-react'
+import Nav from './components/Nav'
+import Footer from './components/Footer'
+import ChatWidget from './components/ChatWidget'
 
 export default function Home() {
-  const [menu, setMenu] = useState(false)
   return <main>
-    <nav className="nav">
-      <a href="#top" className="logo"><Image src="/prestige-logo.png" alt="Prestige Development Group" width={1024} height={171} priority /></a>
-      <div className={`nav-links ${menu ? 'show' : ''}`}>
-        <a href="#about">About</a><a href="#services">Services</a><a href="#projects">Projects</a><a href="#approach">Our approach</a>
-        <a href="#contact" className="nav-cta">Start a project <ArrowRight size={15}/></a>
-      </div>
-      <button className="menu" onClick={() => setMenu(!menu)} aria-label="Toggle menu">{menu ? <X/> : <Menu/>}</button>
-    </nav>
+    <Nav/>
 
     <section className="hero" id="top">
       <div className="hero-bg"/>
@@ -118,6 +48,31 @@ export default function Home() {
       </div>
     </section>
 
+    <section className="testimonials section" id="testimonials">
+      <div className="section-tag">04 — What they say about us</div>
+      <h2>Trusted by partners<br/>who <em>build with us.</em></h2>
+      <div className="testimonial-grid">
+        <article>
+          <Image src="/images/testimonials/matt-auclair.png" width={64} height={64} alt="Matt Auclair"/>
+          <p>Our company Pride Signs Ltd. partnered with PDG on their new IHOP location in Beavercreek Ohio. It was truly a pleasure to work with Tiffany and her team on their exterior signage. From start to finish the project was a complete success and we are eager to get started on their next IHOP.</p>
+          <strong>Matt Auclair</strong>
+          <span>Pride Signs Ltd.</span>
+        </article>
+        <article>
+          <Image src="/images/testimonials/john-andreini.png" width={64} height={64} alt="John Andreini"/>
+          <p>Prestige Development Group simply gets it done. Over the past 7 years, PDG has overcome due diligence obstacles that many developers could not penetrate. If there is anyone that knows how to manage the complexities of a deal, it's Mike Dixson.</p>
+          <strong>John Andreini</strong>
+          <span>Partner at Capital Pacific</span>
+        </article>
+        <article>
+          <Image src="/images/testimonials/steve-parsley.png" width={64} height={64} alt="Steve Parsley"/>
+          <p>I have had the pleasure of handling the closing of several commercial transactions for Prestige Development Group over the past few years, I have found their team to be knowledgeable and efficient. Their projects are very high quality and typically located in high visible areas of our community.</p>
+          <strong>Steve Parsley</strong>
+          <span>Doña Ana Title Company</span>
+        </article>
+      </div>
+    </section>
+
     <section className="approach" id="approach">
       <Image src="/images/architecture.jpeg" fill alt="Design and planning workspace"/>
       <div className="approach-card"><div className="section-tag light">04 — Our approach</div><h2>From possibility<br/>to <em>place.</em></h2><p>Every successful project starts with a clear plan. Our team coordinates every discipline, decision, and dollar to protect your vision from concept to completion.</p><ul><li><span>01</span> Discover & strategize</li><li><span>02</span> Design & finance</li><li><span>03</span> Build & deliver</li></ul><a href="#contact" className="primary sand">How we work <ArrowRight size={16}/></a></div>
@@ -128,7 +83,7 @@ export default function Home() {
       <div className="contact-main"><h2>Have a vision?<br/><em>Let's build it.</em></h2><div><p>Tell us where you want to go. We'll bring the strategy, resources, and experience to help you get there.</p><a href="mailto:info@pdgatx.com" className="contact-link">info@pdgatx.com <ArrowRight/></a><a href="tel:+15122435224" className="contact-phone">512 243 5224</a></div></div>
     </section>
 
-    <footer><Image src="/prestige-logo.png" width={1024} height={171} alt="Prestige Development Group"/><div><span>12912 Hill Country Blvd, Bee Cave, TX 78738</span><span>© 2026 Prestige Development Group, LLC</span></div></footer>
+    <Footer/>
     <ChatWidget/>
   </main>
 }
